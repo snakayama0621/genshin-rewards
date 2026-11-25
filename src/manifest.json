@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "原神 報酬自動受取",
+  "short_name": "原神報酬",
+  "version": "0.1.0",
+  "description": "HoYoLABのログインボーナス受取と原神の交換コード引き換えを自動化する個人用拡張機能です。",
+  "minimum_chrome_version": "120",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_title": "原神 報酬自動受取",
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png"
+    }
+  },
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": true
+  },
+  "background": {
+    "service_worker": "background/index.js",
+    "type": "module"
+  },
+  "permissions": ["storage", "alarms", "notifications"],
+  "host_permissions": [
+    "https://sg-act-public-api.hoyolab.com/*",
+    "https://api-account-os.hoyolab.com/*",
+    "https://api-account-os.hoyoverse.com/*",
+    "https://public-operation-hk4e.hoyoverse.com/*",
+    "https://hoyo-codes.seria.moe/*"
+  ],
+  "content_security_policy": {
+    "extension_pages": "default-src 'self'; script-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; connect-src https://sg-act-public-api.hoyolab.com https://api-account-os.hoyolab.com https://api-account-os.hoyoverse.com https://public-operation-hk4e.hoyoverse.com https://hoyo-codes.seria.moe"
+  }
+}

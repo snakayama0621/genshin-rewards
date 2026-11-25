@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>詳細設定 - 原神 報酬自動受取</title>
+    <link rel="stylesheet" href="../ui/theme.css" />
+    <script type="module" src="options.js"></script>
+  </head>
+  <body class="options">
+    <header class="app-header page-width">
+      <h1 class="app-title">原神 報酬自動受取 <span class="app-subtitle">詳細設定</span></h1>
+    </header>
+
+    <main class="options-grid page-width">
+      <section class="card" aria-labelledby="auto-heading">
+        <h2 id="auto-heading">自動実行</h2>
+
+        <fieldset class="group">
+          <legend>ログインボーナス</legend>
+          <label class="switch">
+            <input id="auto-checkin" type="checkbox" role="switch" />
+            <span>自動で受け取る</span>
+          </label>
+          <div class="field">
+            <label for="checkin-time">実行時刻</label>
+            <input id="checkin-time" type="time" required />
+            <p class="hint">HoYoLABの日付は日本時間 1:00 に切り替わります。</p>
+          </div>
+          <dl class="meta">
+            <div><dt>前回実行</dt><dd id="checkin-last"></dd></div>
+            <div><dt>次回予定</dt><dd id="checkin-next"></dd></div>
+          </dl>
+        </fieldset>
+
+        <fieldset class="group">
+          <legend>交換コード</legend>
+          <div class="field">
+            <label for="redeem-mode">定期確認</label>
+            <select id="redeem-mode"></select>
+            <p class="hint">「新しいコードを通知」は公開のコード一覧を確認するだけで、引き換えは「今すぐ確認」で行います。</p>
+          </div>
+          <div class="field">
+            <label for="redeem-interval">確認間隔</label>
+            <select id="redeem-interval"></select>
+            <p class="hint">下限は1時間（取得元の更新間隔）です。</p>
+          </div>
+          <dl class="meta">
+            <div><dt>前回実行</dt><dd id="redeem-last"></dd></div>
+            <div><dt>次回予定</dt><dd id="redeem-next"></dd></div>
+          </dl>
+        </fieldset>
+        <p id="auto-result" class="result" aria-live="polite"></p>
+      </section>
+
+      <section class="card" aria-labelledby="terms-heading">
+        <h2 id="terms-heading">利用上の注意</h2>
+        <p>原神利用規約 第9条1項20号は、次の行為を禁止しています。</p>
+        <blockquote class="quote">「外部ツール(BOT)もしくはCOGNOSPHERE PTE. LTD. から公式に提供していないプログラムを使用し、自分が有利にゲーム進行し、もしくは正常なサービス利用を妨げる行為。」</blockquote>
+        <ul class="bullets">
+          <li>この拡張機能は非公式です。HoYoverse / COGNOSPHERE とは関係ありません。</li>
+          <li>報酬の受取を自動化することが上記に当たるかは明記されていないため、自動受取・交換コードの定期確認は既定でオフにしています。</li>
+          <li>定期確認の「新しいコードを通知」は、公開されている交換コード一覧（hoyo-codes.seria.moe）を読むだけです。HoYoverse / HoYoLAB には何も送信しません。</li>
+          <li>セキュリティ認証（CAPTCHA）が求められた場合は、自動処理を止めます。公式ページで手動で受け取ってください。</li>
+          <li>違反と判断された場合、警告・利用停止・報酬の取消しがあり得ます。自己責任でご利用ください。</li>
+        </ul>
+      </section>
+
+      <section class="card" aria-labelledby="notify-heading">
+        <h2 id="notify-heading">通知</h2>
+        <div id="notify-list" class="check-list"></div>
+        <p id="notify-result" class="result" aria-live="polite"></p>
+      </section>
+
+      <section class="card" aria-labelledby="role-heading">
+        <h2 id="role-heading">対象キャラクター</h2>
+        <div id="role-select-row" class="field">
+          <label for="role-select">交換コードを引き換えるキャラクター</label>
+          <select id="role-select"></select>
+          <p class="hint">ログインボーナスはHoYoLABアカウント単位で受け取るため、キャラクターを選べません。</p>
+        </div>
+        <p id="role-empty" class="empty" hidden>キャラクターが見つかりません。HoYoLABにログインしてからポップアップを開いてください。</p>
+        <p id="role-result" class="result" aria-live="polite"></p>
+
+        <h3 class="subheading">ログイン状態</h3>
+        <div id="sessions" class="sessions"></div>
+      </section>
+
+      <section class="card span-all" aria-labelledby="codes-heading">
+        <h2 id="codes-heading">交換コード一覧</h2>
+        <p id="codes-caption" class="hint"></p>
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr><th scope="col">コード</th><th scope="col">状態</th><th scope="col">更新日時</th><th scope="col">メッセージ</th></tr>
+            </thead>
+            <tbody id="codes-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card span-all" aria-labelledby="history-heading">
+        <div class="card-head">
+          <h2 id="history-heading">実行履歴</h2>
+          <button id="clear-history" class="button danger" type="button">履歴を消去</button>
+        </div>
+        <div class="filters">
+          <div class="field inline">
+            <label for="filter-task">処理</label>
+            <select id="filter-task"></select>
+          </div>
+          <div class="field inline">
+            <label for="filter-outcome">結果</label>
+            <select id="filter-outcome"></select>
+          </div>
+          <p class="hint">保存上限は300件・30日です。</p>
+        </div>
+        <p id="history-result" class="result" aria-live="polite"></p>
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr><th scope="col">日時</th><th scope="col">処理</th><th scope="col">契機</th><th scope="col">結果</th><th scope="col">メッセージ</th></tr>
+            </thead>
+            <tbody id="history-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
