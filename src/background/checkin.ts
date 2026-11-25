@@ -44,7 +44,7 @@ export function checkinRetryAt(
   if (!settings.autoCheckin || state.gameDay !== today) return null;
   if (state.result === null || state.lastRunAt === null) return null;
   if (!isRetryable(state.result)) return null;
-  if (state.autoAttempts < 1 || state.autoAttempts >= MAX_AUTO_ATTEMPTS)
+  if (state.autoAttempts < 1 || state.autoAttempts > MAX_AUTO_ATTEMPTS)
     return null;
   return Math.max(
     state.lastRunAt + CHECKIN_RETRY_DELAY_MS,
